@@ -29,11 +29,12 @@ var countEmptyLines bool
 
 func processLines(directory string) error {
 	runner := &pkg.Runner{
-		IncludedFiles: include,
-		ExcludedFiles: exclude,
-		Empty:         countEmptyLines,
-		WorkersCount:  workersCount,
-		Directory:     directory,
+		IncludedFiles:    include,
+		ExcludedFiles:    exclude,
+		ShouldCountEmpty: countEmptyLines,
+		WorkersCount:     workersCount,
+		Directory:        directory,
+		ShouldCountLines: true,
 	}
 	results, err := runner.Run()
 	if err != nil {
@@ -46,7 +47,7 @@ func processLines(directory string) error {
 		}
 		total += file.LinesCount
 	}
-	fmt.Printf("%s has %d lines of code\n", directory, total)
+	fmt.Printf("\n%s has %d lines of code\n", directory, total)
 	return nil
 }
 

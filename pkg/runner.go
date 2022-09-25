@@ -2,11 +2,11 @@ package pkg
 
 import (
 	"bufio"
+	"github.com/gobwas/glob"
 	"github.com/pkg/errors"
 	"io/fs"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 	"sync"
 )
@@ -23,16 +23,24 @@ type Result struct {
 type Runner struct {
 	// list of all file paths found in the Directory provided
 	result []*Result
+
 	// regex expression of files to be included on the command count process
 	IncludedFiles string
+
 	// regex expression of files to be excluded on the command count process
 	ExcludedFiles string
+
 	// bool value to weather to count empty lines in the command count process
-	Empty bool
+	ShouldCountEmpty bool
+
 	// number of concurrent workers used to read files and count them
 	WorkersCount int
+
 	// the Directory to be processed
 	Directory string
+
+	// should count the number of lines in the files
+	ShouldCountLines bool
 }
 
 // Run reads the files, coordinates the workers and returns the result array / errors if any
@@ -43,6 +51,10 @@ func (r *Runner) Run() ([]*Result, error) {
 	if err != nil {
 		return nil, err
 	}
+	if !r.ShouldCountLines {
+		return r.result, nil
+	}
+
 	// divide the files (jobs) into groups of workersCount
 	nt := len(r.result) / r.WorkersCount
 	wg := &sync.WaitGroup{}
@@ -63,6 +75,7 @@ func (r *Runner) Run() ([]*Result, error) {
 			errs = append(errs, err)
 		}
 	}()
+	wg.Wait()
 	return r.result, concatErrors(errs)
 }
 
@@ -75,22 +88,16 @@ func (r *Runner) countLines(path string, name string) (int64, error) {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	include, _ := regexp.Compile(r.IncludedFiles)
-	exclude, _ := regexp.Compile(r.ExcludedFiles)
 
 	var count int64
 
 	for scanner.Scan() {
-		if len(r.IncludedFiles) == 0 || include.MatchString(name) {
-			if len(r.ExcludedFiles) == 0 || !exclude.MatchString(name) {
-				if !r.Empty {
-					if len(strings.Trim(scanner.Text(), "\n\r")) == 0 {
-						continue
-					}
-				}
-				count++
-			}
+
+		if !r.ShouldCountEmpty &&
+			len(strings.Trim(scanner.Text(), "\n\r")) == 0 {
+			continue
 		}
+		count++
 	}
 
 	return count, nil
@@ -99,13 +106,20 @@ func (r *Runner) countLines(path string, name string) (int64, error) {
 // ReadFiles reads all files in the current Directory and all subdirectories
 // and stores them in filePaths
 func (r *Runner) readFiles() error {
+	include, err := glob.Compile(r.IncludedFiles)
+	exclude, err := glob.Compile(r.ExcludedFiles)
+	if err != nil {
+		return err
+	}
 	return filepath.WalkDir(r.Directory, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 		if !d.IsDir() {
-			// TODO:FEATURE - add filters for file extensions in Runner
-			r.result = append(r.result, &Result{FilePath: path, FileName: d.Name()})
+			if (len(r.IncludedFiles) == 0 || include.Match(path)) &&
+				(len(r.ExcludedFiles) == 0 || !exclude.Match(path)) {
+				r.result = append(r.result, &Result{FilePath: path, FileName: d.Name()})
+			}
 		}
 		return nil
 	})
