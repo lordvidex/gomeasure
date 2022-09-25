@@ -37,9 +37,6 @@ func processLines(directory string) error {
 		ShouldCountLines: true,
 	}
 	results, err := runner.Run()
-	if err != nil {
-		return err
-	}
 	var total int64 = 0
 	for _, file := range results {
 		if isVerbose {
@@ -48,7 +45,7 @@ func processLines(directory string) error {
 		total += file.LinesCount
 	}
 	fmt.Printf("\n%s has %d lines of code\n", directory, total)
-	return nil
+	return err
 }
 
 func init() {

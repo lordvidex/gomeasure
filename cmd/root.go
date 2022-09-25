@@ -6,9 +6,8 @@ Copyright © 2022 Evans Owamoyo <evans.dev99@gmail.com>
 */
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
+	"os"
 )
 
 // rootCmd represents the base command when called without any subcommands
