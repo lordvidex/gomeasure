@@ -92,7 +92,6 @@ func (r *Runner) countLines(path string, name string) (int64, error) {
 	var count int64
 
 	for scanner.Scan() {
-
 		if !r.ShouldCountEmpty &&
 			len(strings.Trim(scanner.Text(), "\n\r")) == 0 {
 			continue
@@ -116,8 +115,9 @@ func (r *Runner) readFiles() error {
 			return err
 		}
 		if !d.IsDir() {
-			if (len(r.IncludedFiles) == 0 || include.Match(path)) &&
-				(len(r.ExcludedFiles) == 0 || !exclude.Match(path)) {
+			isIncluded := len(r.IncludedFiles) == 0 || include.Match(path) || include.Match(d.Name())
+			isExcluded := len(r.ExcludedFiles) != 0 && (exclude.Match(path) || exclude.Match(d.Name()))
+			if isIncluded && !isExcluded {
 				r.result = append(r.result, &Result{FilePath: path, FileName: d.Name()})
 			}
 		}

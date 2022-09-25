@@ -13,7 +13,7 @@ import (
 
 // fileCmd represents the file command
 var fileCmd = &cobra.Command{
-	Use: "file",
+	Use: "file <directory>",
 
 	Short: "processes the number of files in a directory",
 	Long:  `gomeasure file processes and returns the number of files in a directory / project.`,

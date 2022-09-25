@@ -36,7 +36,6 @@ func Execute() {
 func init() {
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
 	rootCmd.PersistentFlags().BoolVarP(&isVerbose, "verbose", "v", false, "displays the files being processed and their line count when `true`, default value `false`")
-	rootCmd.PersistentFlags().StringVarP(&include, "include", "i", "", "include files that matches to regex expressions")
-	rootCmd.PersistentFlags().StringVarP(&exclude, "no-include", "I", "", "exclude files that matches to regex expressions")
-	rootCmd.Flags().IntVarP(&workersCount, "workers", "w", 5, "number of workers that scan files concurrently")
+	rootCmd.PersistentFlags().StringVarP(&include, "include", "i", "", "include files that matches a given glob pattern e.g. `*.go`, `**/*.py`")
+	rootCmd.PersistentFlags().StringVarP(&exclude, "no-include", "I", "", "exclude files that matches a given glob pattern e.g. `.git/**`, `.gitignore` or lists of files e.g. '{.git/**,.gitignore}' WITHOUT spaces")
 }
