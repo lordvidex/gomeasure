@@ -1,0 +1,48 @@
+package cmd
+
+/*
+Copyright © 2022 Evans Owamoyo <evans.dev99@gmail.com>
+*/
+
+import (
+	"errors"
+	"fmt"
+	"github.com/lordvidex/gomeasure/pkg"
+	"github.com/spf13/cobra"
+)
+
+// linesCmd represents the lines command
+var linesCmd = &cobra.Command{
+	Use:   "lines",
+	Short: "returns the number of lines in all files of a directory",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			cobra.CheckErr(errors.New("<directory> argument is required"))
+			return
+		}
+		cobra.CheckErr(processLines(args[0]))
+	},
+}
+var countEmptyLines bool
+
+func processLines(directory string) error {
+	runner := &pkg.Runner{
+		IncludedFiles: include,
+		ExcludedFiles: exclude,
+		Empty:         countEmptyLines,
+		WorkersCount:  workersCount,
+		Directory:     directory,
+	}
+	results, err := runner.Run()
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s has %d lines of code", directory, results)
+}
+
+func init() {
+	rootCmd.AddCommand(linesCmd)
+	linesCmd.PersistentFlags().BoolVarP(&countEmptyLines, "empty", "e", true, "set to false to not count empty lines, default value `true`")
+	//linesCmd.Flags().BoolVarP()
+}
