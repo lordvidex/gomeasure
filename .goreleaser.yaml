@@ -4,8 +4,6 @@ before:
   hooks:
     # You may remove this if you don't use go modules.
     - go mod tidy
-    # you may remove this if you don't need go generate
-    - go generate ./...
 builds:
   - env:
       - CGO_ENABLED=0
@@ -13,6 +11,7 @@ builds:
       - linux
       - windows
       - darwin
+    gobinary: gomeasure
 archives:
   - replacements:
       darwin: Darwin
@@ -24,12 +23,33 @@ checksum:
   name_template: 'checksums.txt'
 snapshot:
   name_template: "{{ incpatch .Version }}-next"
-changelog:
-  sort: asc
-  filters:
-    exclude:
-      - '^docs:'
-      - '^test:'
+release:
+  prerelease: auto
+  github:
+    owner: lordvidex
+    name: gomeasure
+universal_binaries:
+  - replace: true
+
+brews:
+  - name: gomeasure
+    tap: 
+      owner: lordvidex
+      name: homebrew-lordvidex
+    commit_author:
+      name: Evans Owamoyo
+      email: evans.dev99@gmail.com
+    homepage: https://github.com/lordvidex/gomeasure
+    description: A tool to measure the content of your codebase
+    license: "MIT"
+    test: |
+      system "#{bin}/gomeasure", "--version"
+    install: |
+      bin.install "gomeasure"
+    caveats: |
+      Thanks for installing gomeasure!
+      Please consider starring the project at https://github.com/lordvidex/gomeasure
+
 
 # modelines, feel free to remove those if you don't want/use them:
 # yaml-language-server: $schema=https://goreleaser.com/static/schema.json

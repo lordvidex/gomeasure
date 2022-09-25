@@ -1,7 +1,6 @@
 ## gomeasure
 gomeasure is a CLI tool that measures the lines of code and the count of files in a directory or project
-<!-- TODO -->
-## Usage
+OTTODO : Create a table for all commands## Usage
 ```
 gomeasure --help
 ```
