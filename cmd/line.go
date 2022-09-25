@@ -13,7 +13,7 @@ import (
 
 // linesCmd represents the lines command
 var linesCmd = &cobra.Command{
-	Use:   "lines",
+	Use:   "line",
 	Short: "returns the number of lines in all files of a directory",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
@@ -24,6 +24,7 @@ var linesCmd = &cobra.Command{
 		cobra.CheckErr(processLines(args[0]))
 	},
 }
+
 var countEmptyLines bool
 
 func processLines(directory string) error {
@@ -38,11 +39,18 @@ func processLines(directory string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%s has %d lines of code", directory, results)
+	var total int64 = 0
+	for _, file := range results {
+		if isVerbose {
+			fmt.Printf("%30s: %d\n", file.FilePath, file.LinesCount)
+		}
+		total += file.LinesCount
+	}
+	fmt.Printf("%s has %d lines of code\n", directory, total)
+	return nil
 }
 
 func init() {
 	rootCmd.AddCommand(linesCmd)
 	linesCmd.PersistentFlags().BoolVarP(&countEmptyLines, "empty", "e", true, "set to false to not count empty lines, default value `true`")
-	//linesCmd.Flags().BoolVarP()
 }
