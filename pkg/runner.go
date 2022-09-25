@@ -2,42 +2,45 @@ package pkg
 
 import (
 	"bufio"
+	"github.com/gobwas/glob"
 	"github.com/pkg/errors"
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 )
 
 // Result is the result of a single file count
 // it contains the file path and the number of lines
 type Result struct {
-	file  string
-	lines int64
+	FilePath   string
+	FileName   string
+	LinesCount int64
 }
 
 // Runner is the main struct that processes the files in a folder
 type Runner struct {
-	// list of all file paths found in the directory provided
+	// list of all file paths found in the Directory provided
 	result []*Result
+
+	// regex expression of files to be included on the command count process
+	IncludedFiles string
+
+	// regex expression of files to be excluded on the command count process
+	ExcludedFiles string
+
+	// bool value to weather to count empty lines in the command count process
+	ShouldCountEmpty bool
+
 	// number of concurrent workers used to read files and count them
-	workersCount int
-	// the directory to be processed
-	directory string
-}
+	WorkersCount int
 
-func Default() *Runner {
-	return &Runner{
-		workersCount: 5,
-		directory:    ".",
-	}
-}
+	// the Directory to be processed
+	Directory string
 
-func New(directory string, workers int) *Runner {
-	return &Runner{
-		directory:    directory,
-		workersCount: workers,
-	}
+	// should count the number of lines in the files
+	ShouldCountLines bool
 }
 
 // Run reads the files, coordinates the workers and returns the result array / errors if any
@@ -48,11 +51,16 @@ func (r *Runner) Run() ([]*Result, error) {
 	if err != nil {
 		return nil, err
 	}
+	if !r.ShouldCountLines {
+		return r.result, nil
+	}
+
 	// divide the files (jobs) into groups of workersCount
-	nt := len(r.result) / r.workersCount
+	nt := len(r.result) / r.WorkersCount
 	wg := &sync.WaitGroup{}
+	wg.Add(r.WorkersCount)
 	errs := make([]error, 0)
-	for i := 0; i < r.workersCount-1; i++ {
+	for i := 0; i < r.WorkersCount-1; i++ {
 		i := i
 		go func() {
 			err := r.process(r.result[i*nt:(i+1)*nt], wg)
@@ -62,40 +70,56 @@ func (r *Runner) Run() ([]*Result, error) {
 		}()
 	}
 	go func() {
-		err := r.process(r.result[(r.workersCount-1)*nt:], wg)
+		err := r.process(r.result[(r.WorkersCount-1)*nt:], wg)
 		if err != nil {
 			errs = append(errs, err)
 		}
 	}()
+	wg.Wait()
 	return r.result, concatErrors(errs)
 }
 
-// countLines opens the file and counts the number of lines in a file
-func countLines(path string) (int64, error) {
+// countLines opens the file and counts the number of LinesCount in a file
+func (r *Runner) countLines(path string, name string) (int64, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return 0, err
 	}
+	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
+
 	var count int64
+
 	for scanner.Scan() {
+		if !r.ShouldCountEmpty &&
+			len(strings.Trim(scanner.Text(), "\n\r")) == 0 {
+			continue
+		}
 		count++
 	}
 
 	return count, nil
 }
 
-// ReadFiles reads all files in the current directory and all subdirectories
+// ReadFiles reads all files in the current Directory and all subdirectories
 // and stores them in filePaths
 func (r *Runner) readFiles() error {
-	return filepath.WalkDir(r.directory, func(path string, d fs.DirEntry, err error) error {
+	include, err := glob.Compile(r.IncludedFiles)
+	exclude, err := glob.Compile(r.ExcludedFiles)
+	if err != nil {
+		return err
+	}
+	return filepath.WalkDir(r.Directory, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 		if !d.IsDir() {
-			// TODO:FEATURE - add filters for file extensions in Runner
-			r.result = append(r.result, &Result{file: path})
+			isIncluded := len(r.IncludedFiles) == 0 || include.Match(path) || include.Match(d.Name())
+			isExcluded := len(r.ExcludedFiles) != 0 && (exclude.Match(path) || exclude.Match(d.Name()))
+			if isIncluded && !isExcluded {
+				r.result = append(r.result, &Result{FilePath: path, FileName: d.Name()})
+			}
 		}
 		return nil
 	})
@@ -111,11 +135,11 @@ func (r *Runner) process(arr []*Result, wg *sync.WaitGroup) error {
 		}
 	}()
 	for _, result := range arr {
-		lines, err := countLines(result.file)
+		lines, err := r.countLines(result.FilePath, result.FileName)
 		if err != nil {
 			return err
 		}
-		result.lines = lines
+		result.LinesCount = lines
 	}
 	return nil
 }

@@ -6,20 +6,22 @@ Copyright © 2022 Evans Owamoyo <evans.dev99@gmail.com>
 */
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
+	"os"
 )
 
 // rootCmd represents the base command when called without any subcommands
 var (
 	rootCmd = &cobra.Command{
-		Use:   "gomeasure",
-		Short: "measure lines of code in a project",
-		Long:  `gomeasure is a CLI tool that measures lines of code and number of files in a directory`,
+		Use:     "gomeasure",
+		Short:   "measure lines of code in a project",
+		Long:    `gomeasure is a CLI tool that measures lines of code and number of files in a directory`,
+		Version: "1",
 	}
 	workersCount int
 	isVerbose    bool
+	include      string
+	exclude      string
 )
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -33,6 +35,7 @@ func Execute() {
 
 func init() {
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
-	rootCmd.PersistentFlags().BoolVarP(&isVerbose, "verbose", "v", false, "displays the files being processed and their line count when `true`")
-	rootCmd.Flags().IntVarP(&workersCount, "workers", "w", 5, "number of workers that scan files concurrently")
+	rootCmd.PersistentFlags().BoolVarP(&isVerbose, "verbose", "v", false, "displays the files being processed and their line count when `true`, default value `false`")
+	rootCmd.PersistentFlags().StringVarP(&include, "include", "i", "", "include files that matches a given glob pattern e.g. `*.go`, `**/*.py`")
+	rootCmd.PersistentFlags().StringVarP(&exclude, "no-include", "I", "", "exclude files that matches a given glob pattern e.g. `.git/**`, `.gitignore` or lists of files e.g. '{.git/**,.gitignore}' WITHOUT spaces")
 }
