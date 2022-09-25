@@ -1,33 +1,22 @@
-# This is an example .goreleaser.yml file with some sensible defaults.
-# Make sure to check the documentation at https://goreleaser.com
-before:
-  hooks:
-    # You may remove this if you don't use go modules.
-    - go mod tidy
 builds:
   - env:
       - CGO_ENABLED=0
+    binary: gomeasure
     goos:
       - linux
       - windows
       - darwin
-    gobinary: gomeasure
-archives:
-  - replacements:
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
-      386: i386
-      amd64: x86_64
+    goarch:
+      - amd64
+      - arm64
+    flags:
+      - -mod=vendor
 checksum:
   name_template: 'checksums.txt'
-snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+
 release:
   prerelease: auto
-  github:
-    owner: lordvidex
-    name: gomeasure
+
 universal_binaries:
   - replace: true
 
@@ -42,10 +31,6 @@ brews:
     homepage: https://github.com/lordvidex/gomeasure
     description: A tool to measure the content of your codebase
     license: "MIT"
-    test: |
-      system "#{bin}/gomeasure", "--version"
-    install: |
-      bin.install "gomeasure"
     caveats: |
       Thanks for installing gomeasure!
       Please consider starring the project at https://github.com/lordvidex/gomeasure
