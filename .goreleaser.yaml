@@ -9,8 +9,6 @@ builds:
     goarch:
       - amd64
       - arm64
-    flags:
-      - -mod=vendor
 checksum:
   name_template: 'checksums.txt'
 
