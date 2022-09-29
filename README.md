@@ -20,6 +20,13 @@ $ brew install lordvidex/lordvidex/gomeasure
 $ gomeasure --version # to confirm
 
 ```
+
+### Debain (apt)
+```shell
+$ curl https://github.com/lordvidex/gomeasure/install.sh
+$ sudo sh install.sh
+```
+
 ## Usage
 ```
 gomeasure --help
