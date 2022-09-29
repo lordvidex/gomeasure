@@ -24,7 +24,7 @@ $ gomeasure --version # to confirm
 ### Debain (apt)
 1. Using apt
 ```shell
-$ curl https://lordvidex.github.io/gomeasure/install.sh
+$ curl -o install.sh https://lordvidex.github.io/gomeasure/install.sh
 $ sudo sh install.sh
 ```
 
