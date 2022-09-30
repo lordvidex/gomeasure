@@ -21,15 +21,13 @@ $ gomeasure --version # to confirm
 
 ```
 
-### Debain (apt)
-1. Using apt
-```shell
-$ curl -o install.sh https://lordvidex.github.io/gomeasure/install.sh
-$ sudo sh install.sh
+### Debian (amd64) 
+1. copy and paste the following command in your terminal
+```bash
+curl "https://raw.githubusercontent.com/lordvidex/gomeasure/apt-deploy/scripts/install.sh" | sh
 ```
 
 ## Usage
-```
 gomeasure --help
 ```
 
