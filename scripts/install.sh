@@ -21,17 +21,17 @@ curl "https://github.com/lordvidex/gomeasure/releases/download/v${VERSION}/gomea
 # move to lib directory
 
 # clear folder and uninstall old versions if exists
-[ -d "$DIR" ] && rm -rf "$DIR"
-[ -L "$EXEC" ] && rm "$EXEC"
+[ -d "$DIR" ] && sudo rm -rf "$DIR"
+[ -L "$EXEC" ] && sudo rm "$EXEC"
 
 # create folder if it doesn't exist
-[ ! -d "$DIR" ] && mkdir -p "$DIR"
+[ ! -d "$DIR" ] && sudo mkdir -p "$DIR"
 
-tar -xf zipped.tar.gz -C "$DIR"
-rm zipped.tar.gz # clean
+sudo tar -xf zipped.tar.gz -C "$DIR"
+sudo rm zipped.tar.gz # clean
 
 # create symbolic links
-ln -s "$DIR/gomeasure" "$EXEC"
+sudo ln -s "$DIR/gomeasure" "$EXEC"
 
 # test that it works
 echo "gomeasure successfully installed"
