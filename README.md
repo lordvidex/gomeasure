@@ -5,7 +5,7 @@ gomeasure is a CLI tool that measures the lines of code and the count of files i
 ## Installation
 ### Build yourself
 This project is open source. You can simply clone this repo and build using:
-```
+```shell
 go build main.go -o bin/gomeasure
 ```
 
@@ -22,11 +22,18 @@ $ gomeasure --version # to confirm
 ```
 
 ### Debian (amd64) 
-1. copy and paste the following command in your terminal
+1. To **install** on debian distributions copy and paste the following command in your terminal
 ```bash
 curl "https://raw.githubusercontent.com/lordvidex/gomeasure/apt-deploy/scripts/install.sh" | sh
 ```
 
+## Uninstall
+
+### Debian (amd64)
+1. To **uninstall** on debian distributions copy and paste the following command in your terminal
+```bash
+curl "https://raw.githubusercontent.com/lordvidex/gomeasure/apt-deploy/scripts/uninstall.sh" | sh
+```
 ## Usage
 gomeasure --help
 ```
