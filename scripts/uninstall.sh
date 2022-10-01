@@ -10,5 +10,5 @@ if [ "$(id -u)" != "0" ]; then
     sudo echo # Echo to make user enter password
 fi
 
-sudo rm -rf "$DIR" "$EXEC"
+rm -rf "$DIR" "$EXEC"
 echo "gomeasure successfully uninstalled"
