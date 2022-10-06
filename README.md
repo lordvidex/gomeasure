@@ -16,7 +16,7 @@ Checkout the most updated releases [here](https://github.com/lordvidex/gomeasure
 1. Using homebrew
 ```bash
 $ brew tap lordvidex/lordvidex
-$ brew install lordvidex/lordvidex/gomeasure
+$ brew install gomeasure
 $ gomeasure --version # to confirm
 
 ```

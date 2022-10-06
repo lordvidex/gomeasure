@@ -13,10 +13,17 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var (
 	rootCmd = &cobra.Command{
-		Use:     "gomeasure",
-		Short:   "measure lines of code in a project",
-		Long:    `gomeasure is a CLI tool that measures lines of code and number of files in a directory`,
-		Version: "1",
+		Use:   "gomeasure",
+		Short: "gomeasure is a CLI tool that provides quantitative analysis of a project",
+		Long: `gomeasure is a CLI tool that provides quantitative analysis of a project.
+
+it can be used to count the number of files in a directory recursively parsing subdirectories,
+count the number of lines in all files of a directory, 
+and count the number of characters in all files of a directory.
+
+It also includes various flags that can be used to customize the output of the tool.
+Run 'gomeasure --help' to see the available flags.`,
+		Version: "0.1.1",
 	}
 	workersCount int
 	isVerbose    bool
