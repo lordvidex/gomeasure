@@ -106,9 +106,9 @@ func (r *Runner) countLines(path string, name string) (int64, error) {
 	var count int64
 
 	for scanner.Scan() {
-		text := scanner.Text()
+		text := strings.TrimSpace(scanner.Text())
 		if r.ShouldCountEmpty ||
-			len(strings.Trim(text, "\n\r")) != 0 {
+			len(text) != 0 {
 			if r.Action == MeasureCharacter {
 				count += int64(len([]byte(text)))
 			} else if r.Action == MeasureLine {

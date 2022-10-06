@@ -7,6 +7,10 @@ import (
 	"testing"
 )
 
+var (
+	testCaseDir = "testdata"
+)
+
 func TestRunner_process(t *testing.T) {
 	type fields struct {
 		result       []*Result
