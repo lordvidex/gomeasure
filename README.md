@@ -16,7 +16,7 @@ Checkout the most updated releases [here](https://github.com/lordvidex/gomeasure
 1. Using homebrew
 ```bash
 $ brew tap lordvidex/lordvidex
-$ brew install lordvidex/lordvidex/gomeasure
+$ brew install gomeasure
 $ gomeasure --version # to confirm
 
 ```
@@ -32,7 +32,7 @@ curl "https://raw.githubusercontent.com/lordvidex/gomeasure/master/scripts/insta
 ### Debian (amd64)
 1. To **uninstall** on debian distributions copy and paste the following command in your terminal
 ```bash
-curl "https://raw.githubusercontent.com/lordvidex/gomeasure/apt-deploy/scripts/uninstall.sh" | sh
+curl "https://raw.githubusercontent.com/lordvidex/gomeasure/master/scripts/uninstall.sh" | sh
 ```
 ## Usage
 gomeasure --help
