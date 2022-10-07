@@ -6,7 +6,7 @@ Copyright © 2022 Evans Owamoyo <evans.dev99@gmail.com>
 import (
 	"errors"
 	"fmt"
-	"github.com/lordvidex/gomeasure/pkg"
+	"github.com/lordvidex/gomeasure/pkg/gomeasure"
 	"github.com/spf13/cobra"
 	"path/filepath"
 )
@@ -31,11 +31,11 @@ func init() {
 }
 
 func processFiles(directory string) error {
-	runner := &pkg.Runner{
-		IncludedFiles:    include,
-		ExcludedFiles:    exclude,
-		Directory:        directory,
-		ShouldCountLines: false,
+	runner := &gomeasure.Runner{
+		IncludedFiles: include,
+		ExcludedFiles: exclude,
+		Directory:     directory,
+		Action:        gomeasure.MeasureFile,
 	}
 	results, err := runner.Run()
 	if err != nil {
