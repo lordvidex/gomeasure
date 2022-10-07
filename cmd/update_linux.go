@@ -9,16 +9,15 @@ import (
 var updateCmd = &cobra.Command{
 	Use:   "update ",
 	Short: "update gomeasure cli to latest version",
-
-	Args: cobra.ExactArgs(0),
+	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		cobra.CheckErr(update())
 	},
 }
 
 func update() error {
-	runner := &pkg.Runner{}
-	err := runner.Update(rootCmd.Version)
+	updater := &pkg.Updater{}
+	err := updater.Update(rootCmd.Version)
 	if err != nil {
 		return err
 	}
