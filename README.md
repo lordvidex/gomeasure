@@ -24,7 +24,7 @@ $ gomeasure --version # to confirm
 ### Debian (amd64) 
 1. To **install** on debian distributions copy and paste the following command in your terminal
 ```bash
-curl "https://raw.githubusercontent.com/lordvidex/gomeasure/apt-deploy/scripts/install.sh" | sh
+curl "https://raw.githubusercontent.com/lordvidex/gomeasure/master/scripts/install.sh" | sh
 ```
 
 ## Uninstall
