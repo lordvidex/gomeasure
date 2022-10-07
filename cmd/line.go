@@ -7,7 +7,7 @@ Copyright © 2022 Evans Owamoyo <evans.dev99@gmail.com>
 import (
 	"errors"
 	"fmt"
-	"github.com/lordvidex/gomeasure/pkg"
+	"github.com/lordvidex/gomeasure/pkg/gomeasure"
 	"github.com/spf13/cobra"
 )
 
@@ -29,21 +29,21 @@ var linesCmd = &cobra.Command{
 var countEmptyLines bool
 
 func processLines(directory string) error {
-	runner := &pkg.Runner{
+	runner := &gomeasure.Runner{
 		IncludedFiles:    include,
 		ExcludedFiles:    exclude,
 		ShouldCountEmpty: countEmptyLines,
 		WorkersCount:     workersCount,
 		Directory:        directory,
-		ShouldCountLines: true,
+		Action:           gomeasure.MeasureLine,
 	}
 	results, err := runner.Run()
 	var total int64 = 0
 	for _, file := range results {
 		if isVerbose {
-			fmt.Printf("%30s: %d\n", file.FilePath, file.LinesCount)
+			fmt.Printf("%30s -> %d lines \n", file.FilePath, file.Count)
 		}
-		total += file.LinesCount
+		total += file.Count
 	}
 	fmt.Printf("\n%s has %d lines of code\n", directory, total)
 	return err
