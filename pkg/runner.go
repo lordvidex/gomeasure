@@ -180,7 +180,7 @@ func (r *Runner) Update(currentVersion string) error {
 }
 
 func (r *Runner) updateCli() error {
-	branch := "apt-deploy"
+	branch := "master"
 	link := "curl \"https://raw.githubusercontent.com/lordvidex/gomeasure/" + branch + "/scripts/install.sh\" | sh"
 	cmd := exec.Command("bash", "-c", link)
 	_, err := cmd.Output()

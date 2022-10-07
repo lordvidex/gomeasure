@@ -7,8 +7,8 @@ import (
 
 // updateCmd represents the update command
 var updateCmd = &cobra.Command{
-	Use:   "update [version_number]",
-	Short: "update gomeasure cli to another version(upgrade or downgrade)",
+	Use:   "update ",
+	Short: "update gomeasure cli to latest version",
 
 	Args: cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
