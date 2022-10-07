@@ -1,11 +1,14 @@
 package cmd
 
 import (
+	"bufio"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
 	"net/http"
+	"os"
+	"os/exec"
+	"strings"
 )
 
 type Message struct {
@@ -24,53 +27,67 @@ var updateCmd = &cobra.Command{
 	Use:   "update [version_number]",
 	Short: "update gomeasure cli to another version(upgrade or downgrade)",
 
-	Args: cobra.ExactArgs(1),
+	Args: cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) > 1 {
-			cobra.CheckErr(errors.New("passed to many arguments"))
-		} else if len(args) == 0 { // no explicit version is passed
-			cobra.CheckErr(update(""))
-		} else if args[0] == "show" { // command to show all versions
-			cobra.CheckErr(checkUpdate())
-		} else { // update to latest version if exists
-			cobra.CheckErr(update(args[0]))
-		}
+		cobra.CheckErr(update())
 	},
 }
 
-func update(explicitVersion string) error {
-	return errors.New("new thing error")
-}
-
-func checkUpdate() error {
-	versions, err := getUpdateVersions()
+func update() error {
+	latest, err := getVersions()
 	if err != nil {
 		return err
 	}
-	fmt.Println("Current Available versions:")
-	for _, element := range versions {
-		fmt.Println(element)
+	if "v"+rootCmd.Version == latest {
+		fmt.Println("gomeasure is up to date")
+	} else {
+		fmt.Printf("Version %s is avaliable, install new verison?(y/n)", latest)
+		reader := bufio.NewReader(os.Stdin)
+		for true {
+			input, _ := reader.ReadString('\n')
+			input = strings.ToLower(input[:len(input)-1])
+			if input == "y" {
+				err = updateCli()
+				if err != nil {
+					return err
+				}
+				break
+			} else if input == "n" {
+				fmt.Println("Aborted update process")
+				break
+			} else {
+				fmt.Println("Unknown input please try again")
+			}
+		}
 	}
 	return nil
 }
 
-func getUpdateVersions() ([]string, error) {
+func updateCli() error {
+	branch := "apt-deploy"
+	link := "curl \"https://raw.githubusercontent.com/lordvidex/gomeasure/" + branch + "/scripts/install.sh\" | sh"
+	cmd := exec.Command("bash", "-c", link)
+	_, err := cmd.Output()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func getVersions() (string, error) {
 	url := "https://api.github.com/repos/lordvidex/gomeasure/tags"
 	resp, err := http.Get(url)
 	if err != nil {
-		return []string{}, fmt.Errorf("cannot fetch URL %q: %v", url, err)
+		return "", fmt.Errorf("cannot fetch URL %q: %v", url, err)
 	}
 	defer resp.Body.Close()
 
 	var messages []Message
 
 	err = json.NewDecoder(resp.Body).Decode(&messages)
-	names := make([]string, len(messages))
-	for i := 0; i < len(messages); i++ {
-		names[i] = messages[i].Name
-	}
+	latest := messages[len(messages)-1].Name
 
-	return names, nil
+	return latest, nil
 }
 
 func init() {

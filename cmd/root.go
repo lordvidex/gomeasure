@@ -16,7 +16,7 @@ var (
 		Use:     "gomeasure",
 		Short:   "measure lines of code in a project",
 		Long:    `gomeasure is a CLI tool that measures lines of code and number of files in a directory`,
-		Version: "1",
+		Version: "0.1",
 	}
 	workersCount int
 	isVerbose    bool
