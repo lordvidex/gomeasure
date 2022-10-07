@@ -7,7 +7,6 @@ EXEC="/usr/local/bin/gomeasure"
 
 if [ "$(id -u)" != "0" ]; then
   echo "This script requires superuser access to install cmd tool."
-  echo "You will be prompted for your password by sudo."
   sudo echo # Echo to make user enter password
 fi
 #  set -ex
