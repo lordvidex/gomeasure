@@ -29,12 +29,9 @@ func init() {
 
 func processCharacters(file string) error {
 	runner := &gomeasure.Runner{
-		IncludedFiles:    include,
-		ExcludedFiles:    exclude,
-		ShouldCountEmpty: countEmptyLines,
-		WorkersCount:     workersCount,
-		Directory:        file,
-		Action:           gomeasure.MeasureCharacter,
+		Config:    generalConfig,
+		Directory: file,
+		Action:    gomeasure.MeasureCharacter,
 	}
 	results, err := runner.Run()
 	if err != nil {
@@ -42,8 +39,9 @@ func processCharacters(file string) error {
 	}
 
 	var total int64 = 0
+	fmt.Println(generalConfig)
 	for _, result := range results {
-		if isVerbose {
+		if generalConfig.IsVerbose {
 			fmt.Printf("%30s -> %d characters\n", result.FilePath, result.Count)
 		}
 		total += result.Count

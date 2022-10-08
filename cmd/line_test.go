@@ -47,12 +47,14 @@ func Test_processLines(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			runner := &gomeasure.Runner{
-				IncludedFiles:    tt.args.include,
-				ExcludedFiles:    tt.args.exclude,
-				ShouldCountEmpty: tt.args.countEmptyLines,
-				Directory:        tt.args.directory,
-				WorkersCount:     1,
-				Action:           gomeasure.MeasureLine,
+				Config: &gomeasure.Config{
+					IncludedFiles:    tt.args.include,
+					ExcludedFiles:    tt.args.exclude,
+					ShouldCountEmpty: tt.args.countEmptyLines,
+					WorkersCount:     1,
+				},
+				Directory: tt.args.directory,
+				Action:    gomeasure.MeasureLine,
 			}
 			results, err := runner.Run()
 

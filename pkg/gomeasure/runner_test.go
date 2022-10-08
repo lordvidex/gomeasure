@@ -37,9 +37,9 @@ func TestRunner_process(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			r := &Runner{
-				result:       tt.fields.result,
-				WorkersCount: tt.fields.workersCount,
-				Directory:    tt.fields.directory,
+				result:    tt.fields.result,
+				Config:    &Config{WorkersCount: tt.fields.workersCount},
+				Directory: tt.fields.directory,
 			}
 			if err := r.process(tt.args.arr, tt.args.wg); (err != nil) != tt.wantErr {
 				t.Errorf("process() error = %v, wantErr %v", err, tt.wantErr)

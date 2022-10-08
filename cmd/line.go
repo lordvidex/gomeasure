@@ -30,17 +30,14 @@ var countEmptyLines bool
 
 func processLines(directory string) error {
 	runner := &gomeasure.Runner{
-		IncludedFiles:    include,
-		ExcludedFiles:    exclude,
-		ShouldCountEmpty: countEmptyLines,
-		WorkersCount:     workersCount,
-		Directory:        directory,
-		Action:           gomeasure.MeasureLine,
+		Config:    generalConfig,
+		Directory: directory,
+		Action:    gomeasure.MeasureLine,
 	}
 	results, err := runner.Run()
 	var total int64 = 0
 	for _, file := range results {
-		if isVerbose {
+		if generalConfig.IsVerbose {
 			fmt.Printf("%30s -> %d lines \n", file.FilePath, file.Count)
 		}
 		total += file.Count
@@ -52,5 +49,5 @@ func processLines(directory string) error {
 func init() {
 	rootCmd.AddCommand(linesCmd)
 	linesCmd.Flags().BoolVarP(&countEmptyLines, "empty", "e", false, "add this flag to count empty lines, default value `false`")
-	linesCmd.Flags().IntVarP(&workersCount, "workers", "w", 5, "number of workers that scan files concurrently")
+	linesCmd.Flags().IntP("workers", "w", 5, "number of workers that scan files concurrently")
 }

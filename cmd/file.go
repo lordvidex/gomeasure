@@ -32,16 +32,15 @@ func init() {
 
 func processFiles(directory string) error {
 	runner := &gomeasure.Runner{
-		IncludedFiles: include,
-		ExcludedFiles: exclude,
-		Directory:     directory,
-		Action:        gomeasure.MeasureFile,
+		Config:    generalConfig,
+		Directory: directory,
+		Action:    gomeasure.MeasureFile,
 	}
 	results, err := runner.Run()
 	if err != nil {
 		return err
 	}
-	if isVerbose {
+	if generalConfig.IsVerbose {
 		abs, err := filepath.Abs(directory)
 		if err != nil {
 			abs = directory // sorry lol :(

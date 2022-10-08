@@ -38,23 +38,14 @@ type Runner struct {
 	// list of all file paths found in the Directory provided
 	result []*Result
 
-	// regex expression of files to be included on the command count process
-	IncludedFiles string
-
-	// regex expression of files to be excluded on the command count process
-	ExcludedFiles string
-
-	// bool value to weather to count empty lines in the command count process
-	ShouldCountEmpty bool
-
-	// number of concurrent workers used to read files and count them
-	WorkersCount int
-
 	// the Directory to be processed
 	Directory string
 
 	// specifies whether to count files, lines or characters
 	Action measureAction
+
+	// Configurations that determine how the command count process should be performed
+	*Config
 }
 
 // Run reads the files, coordinates the workers and returns the result array / errors if any
