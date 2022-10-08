@@ -39,10 +39,12 @@ func Test_processFiles(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			runner := &gomeasure.Runner{
-				IncludedFiles: tt.args.include,
-				ExcludedFiles: tt.args.exclude,
-				Directory:     tt.args.directory,
-				Action:        gomeasure.MeasureFile,
+				Config: &gomeasure.Config{
+					IncludedFiles: tt.args.include,
+					ExcludedFiles: tt.args.exclude,
+				},
+				Directory: tt.args.directory,
+				Action:    gomeasure.MeasureFile,
 			}
 			results, err := runner.Run()
 			if (err != nil) != tt.wantErr {

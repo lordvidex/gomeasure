@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=../docs/gomeasure.json
+general:
+  verbose: true
+  include:
+    - '*.dart'    # include all dart files
+    - '*.go'      # all go files
+  exclude:
+    - 'dist/**'   # all files in the dist folder
+    - '**/.*'     # all files beginning with '.'
+line:
+  # all options in general are included for line
+  empty_lines: false  # do not count empty lines
+  workers: 5          # use 5 concurrent workers to count lines
+
+  # all options in general are included for file
+character:
+  verbose: false
+  empty_lines: false
+  workers: 5
+

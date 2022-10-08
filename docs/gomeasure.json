@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/GOMeasureYAML",
+  "$defs": {
+    "Flags": {
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "description": "verbose output",
+          "default": false
+        },
+        "include": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "exclude": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "GOMeasureYAML": {
+      "properties": {
+        "general": {
+          "$ref": "#/$defs/Flags"
+        },
+        "line": {
+          "$ref": "#/$defs/LineFlags"
+        },
+        "file": {
+          "$ref": "#/$defs/Flags"
+        },
+        "character": {
+          "$ref": "#/$defs/LineFlags"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "LineFlags": {
+      "properties": {
+        "verbose": {
+          "type": "boolean",
+          "description": "verbose output",
+          "default": false
+        },
+        "include": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "exclude": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "empty_lines": {
+          "type": "boolean",
+          "description": "include empty lines",
+          "default": false
+        },
+        "workers": {
+          "type": "integer",
+          "description": "number of workers",
+          "default": 5
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    }
+  }
+}

@@ -6,7 +6,7 @@ gomeasure is a CLI tool that measures the lines of code and the count of files i
 ### Build yourself
 This project is open source. You can simply clone this repo and build using:
 ```shell
-go build main.go -o bin/gomeasure
+go build -o bin/gomeasure main.go 
 ```
 
 ### Download releases

@@ -49,12 +49,9 @@ func Test_processCharacters(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			runner := &gomeasure.Runner{
-				IncludedFiles:    include,
-				ExcludedFiles:    exclude,
-				ShouldCountEmpty: countEmptyLines,
-				WorkersCount:     workersCount,
-				Directory:        tt.args.file,
-				Action:           gomeasure.MeasureCharacter,
+				Config:    generalConfig,
+				Directory: tt.args.file,
+				Action:    gomeasure.MeasureCharacter,
 			}
 			results, err := runner.Run()
 			if (err != nil) != tt.wantErr {
