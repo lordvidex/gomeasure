@@ -35,8 +35,21 @@ curl "https://raw.githubusercontent.com/lordvidex/gomeasure/master/scripts/insta
 curl "https://raw.githubusercontent.com/lordvidex/gomeasure/master/scripts/uninstall.sh" | sh
 ```
 ## Usage
+```bash
 gomeasure --help
 ```
+
+### Configuration File
+gomeasure uses a configuration file to make it easier to fine tune the CLI flags.
+gomeasure looks for a file named `.gomeasure.yaml` in the current directory. If it doesn't find it, it looks for it in the home directory. If no configuration file is found, it uses the default values.
+
+Note that the priority of the configurations are as follows:
+1. CLI flags (highest priority)
+2. Configuration file (in current directory)
+3. Configuration file (in home directory)
+4. Default values (lowest priority)
+
+Checkout the [example configuration file](./example/.gomeasure.yaml) to get started.
 
 ## DISCLAIMER:
 Normally, the program reads all kinds of file and returns the number of lines in each of them. Therefore, it is up to the developer to filter out the files to be scanned with 
