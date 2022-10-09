@@ -29,7 +29,7 @@ func Test_initConfig(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			//cfgFile = "../example/.gomeasure.yaml"
-			initConfig()
+			initRootConfig()
 			fmt.Printf("%+v", generalConfig)
 		})
 	}

@@ -4,12 +4,17 @@ package cmd
 Copyright © 2022 Evans Owamoyo <evans.dev99@gmail.com>
 */
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"path/filepath"
+
 	"github.com/lordvidex/gomeasure/pkg/gomeasure"
 	"github.com/spf13/cobra"
-	"path/filepath"
+	"github.com/spf13/viper"
 )
+
+var fileConfig = gomeasure.NewConfig()
 
 // fileCmd represents the file command
 var fileCmd = &cobra.Command{
@@ -17,6 +22,14 @@ var fileCmd = &cobra.Command{
 
 	Short: "processes the number of files in a directory",
 	Long:  `gomeasure file processes and returns the number of files in a directory / project.`,
+	PreRun: func(cmd *cobra.Command, _ []string) {
+		
+		if !initFileConfig() {
+			x := *generalConfig
+			fileConfig = &x
+		}
+		parseFlags(cmd, fileConfig)
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			cobra.CheckErr(errors.New("<directory> argument is required"))
@@ -30,9 +43,20 @@ func init() {
 	rootCmd.AddCommand(fileCmd)
 }
 
+func initFileConfig() bool {
+	data := viper.GetStringMap("file")
+	if len(data) == 0 {
+		return false
+	}
+	bytes, err := json.Marshal(data)
+	cobra.CheckErr(err)
+	cobra.CheckErr(json.Unmarshal(bytes, &fileConfig))
+	return true
+}
+
 func processFiles(directory string) error {
 	runner := &gomeasure.Runner{
-		Config:    generalConfig,
+		Config:    fileConfig,
 		Directory: directory,
 		Action:    gomeasure.MeasureFile,
 	}
@@ -40,7 +64,7 @@ func processFiles(directory string) error {
 	if err != nil {
 		return err
 	}
-	if generalConfig.IsVerbose {
+	if fileConfig.IsVerbose {
 		abs, err := filepath.Abs(directory)
 		if err != nil {
 			abs = directory // sorry lol :(
