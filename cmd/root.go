@@ -7,12 +7,13 @@ Copyright © 2022 Evans Owamoyo <evans.dev99@gmail.com>
 
 import (
 	"encoding/json"
-	"fmt"
+	"os"
+	"strconv"
+
 	"github.com/lordvidex/gomeasure/pkg/gomeasure"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
-	"os"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -35,23 +36,6 @@ and count the number of characters in all files of a directory.
 It also includes various flags that can be used to customize the output of the tool.
 Run 'gomeasure --help' to see the available flags.`,
 		Version: "0.2.1",
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			// loop each flag and set the value in the generalConfig
-			// if the flag was explicitly set by the user
-			cmd.Flags().VisitAll(func(flag *pflag.Flag) {
-				if !flag.Changed {
-					return
-				}
-				switch flag.Name {
-				case "verbose":
-					generalConfig.IsVerbose = flag.Value.String() == "true"
-				case "include":
-					generalConfig.IncludedFiles = flag.Value.String()
-				case "no-include":
-					generalConfig.ExcludedFiles = flag.Value.String()
-				}
-			})
-		},
 	}
 )
 
@@ -65,7 +49,7 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(initRootConfig)
 
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
 	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "generalConfig file (default is $HOME/.gomeasure.yaml)")
@@ -75,8 +59,8 @@ func init() {
 	rootCmd.PersistentFlags().StringP("no-include", "I", "", "exclude files that matches a given glob pattern e.g. `.git/**`, `.gitignore` or lists of files e.g. '{.git/**,.gitignore}' WITHOUT spaces")
 }
 
-// initConfig reads in generalConfig file searching the working directory and the home directory
-func initConfig() {
+// initRootConfig reads in generalConfig file searching the working directory and the home directory
+func initRootConfig() {
 	if cfgFile != "" {
 		// Use generalConfig file from the flag.
 		viper.SetConfigFile(cfgFile)
@@ -103,6 +87,30 @@ func initConfig() {
 	bytes, err := json.Marshal(data)
 	cobra.CheckErr(err)
 	cobra.CheckErr(json.Unmarshal(bytes, &generalConfig))
-	fmt.Println("finished reading configs")
-	fmt.Println("generalConfig", generalConfig)
+}
+
+func parseFlags(cmd *cobra.Command, config *gomeasure.Config) {
+	cmd.Flags().VisitAll(func(flag *pflag.Flag) {
+		if !flag.Changed {
+			return
+		}
+		switch flag.Name {
+		case "verbose":
+			config.IsVerbose = flag.Value.String() == "true"
+		case "include":
+			config.IncludedFiles = flag.Value.String()
+		case "no-include":
+			config.ExcludedFiles = flag.Value.String()
+		case "empty":
+			config.ShouldCountEmpty = flag.Value.String() == "true"
+		case "workers":
+			intVal, err := strconv.Atoi(flag.Value.String())
+			if err != nil {
+				return
+			}
+			if intVal > 0 {
+				config.WorkersCount = intVal
+			}
+		}
+	})
 }
