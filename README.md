@@ -26,6 +26,16 @@ $ gomeasure --version # to confirm
 ```bash
 curl "https://raw.githubusercontent.com/lordvidex/gomeasure/master/scripts/install.sh" | sh
 ```
+### Docker usage (new)
+You can use the docker image to run gomeasure.
+```bash
+docker run --rm -v $(pwd):/app lordvidex/gomeasure:alpine line /app
+```
+#### How to Use
+- The `-v` argument is used to mount the directory to be measured to the container's `/app` directory. Therefore, to measure any directory instead of the current directory, you can replace `$(pwd)` with the path to the directory you want to measure.
+- The `--rm` argument is used to remove the container after the command is executed to prevent dangling containers.
+- All arguments after the image name are passed to the gomeasure command.
+- The `/app` should not be replaced because source directory is mapped to `/app` in the container.
 
 ## Uninstall
 

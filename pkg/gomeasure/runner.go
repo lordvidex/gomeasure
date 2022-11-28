@@ -1,3 +1,10 @@
+// Copyright © 2022 Evans Owamoyo <evans.dev99@gmail.com>
+
+/*
+Package gomeasure contains the business logic or the main logic of the software
+
+This allows any driver (e.g. a CLI) to simply call functions to get things done. (Separation of concerns).
+*/
 package gomeasure
 
 import (

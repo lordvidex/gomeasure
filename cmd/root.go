@@ -78,11 +78,10 @@ func initRootConfig() {
 		viper.AddConfigPath(home)
 		viper.SetConfigType("yaml")
 		viper.SetConfigName(".gomeasure")
-		cobra.CheckErr(viper.ReadInConfig())
+		_ = viper.ReadInConfig()
 	}
 
 	// If a generalConfig file is found, read it in.
-	// TODO: remove cobra.CheckErr because command should work without configs
 	data := viper.GetStringMap("general")
 	bytes, err := json.Marshal(data)
 	cobra.CheckErr(err)

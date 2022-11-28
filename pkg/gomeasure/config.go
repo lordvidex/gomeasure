@@ -5,11 +5,16 @@ import (
 	"strings"
 )
 
+const (
+	defaultWorkersCount = 5
+)
+
+// Config is the configuration struct for gomeasure.
 type Config struct {
-	// regex expression of files to be included on the command count process
+	// glob expression of files to be included on the command count process
 	IncludedFiles string `json:"include"`
 
-	// regex expression of files to be excluded on the command count process
+	// glob expression of files to be excluded on the command count process
 	ExcludedFiles string `json:"exclude"`
 
 	// bool value to weather to count empty lines in the command count process
@@ -22,9 +27,10 @@ type Config struct {
 	IsVerbose bool `json:"verbose"`
 }
 
+// NewConfig returns a new Config with default values
 func NewConfig() *Config {
 	return &Config{
-		WorkersCount: 5,
+		WorkersCount: defaultWorkersCount,
 	}
 }
 
@@ -71,11 +77,13 @@ func sliceToGlobString(arr []string) string {
 		arr = func(input []string) []string {
 			output := make([]string, 0, len(input))
 			for _, v := range input {
-				output = append(output, strings.TrimSpace(v))
+				trimmed := strings.TrimSpace(v)
+				if len(trimmed) != 0 {
+					output = append(output, trimmed)
+				}
 			}
 			return output
 		}(arr)
-		str := "{" + strings.Join(arr, ",") + "}"
-		return str
+		return "{" + strings.Join(arr, ",") + "}"
 	}
 }
