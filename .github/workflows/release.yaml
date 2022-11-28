@@ -1,4 +1,3 @@
-
 name: goreleaser
 
 on:
@@ -34,7 +33,7 @@ jobs:
           password: ${{ secrets.PUBLISHER_TOKEN }}
       - name: Build the image
         run: |
-          docker build . -t ghcr.io/lordvidex/gomeasure:alpine
+          docker build . -t ghcr.io/lordvidex/gomeasure:alpine --label "org.opencontainers.image.source=https://github.com/lordvidex/gomeasure"
           docker push ghcr.io/lordvidex/gomeasure:alpine
       - uses: goreleaser/goreleaser-action@v2
         with:

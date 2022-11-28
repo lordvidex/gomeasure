@@ -35,7 +35,7 @@ and count the number of characters in all files of a directory.
 
 It also includes various flags that can be used to customize the output of the tool.
 Run 'gomeasure --help' to see the available flags.`,
-		Version: "0.2.1",
+		Version: "0.3.1",
 	}
 )
 
