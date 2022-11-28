@@ -29,7 +29,7 @@ curl "https://raw.githubusercontent.com/lordvidex/gomeasure/master/scripts/insta
 ### Docker usage (new)
 You can use the docker image to run gomeasure.
 ```bash
-docker run --rm -v $(pwd):/app lordvidex/gomeasure:alpine line /app
+docker run --rm -v $(pwd):/app ghcr.io/lordvidex/gomeasure:alpine line /app
 ```
 #### How to Use
 - The `-v` argument is used to mount the directory to be measured to the container's `/app` directory. Therefore, to measure any directory instead of the current directory, you can replace `$(pwd)` with the path to the directory you want to measure.
