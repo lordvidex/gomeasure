@@ -20,7 +20,7 @@ var characterCmd = &cobra.Command{
 	Use:   "character <directory|file>",
 	Short: "processes the number of characters contained in the files in a directory",
 	PreRun: func(cmd *cobra.Command, args []string) {
-		
+
 		if !initCharacterConfig() {
 			x := *generalConfig
 			characterConfig = &x
@@ -69,11 +69,15 @@ func processCharacters(file string) error {
 	}
 
 	var total int64 = 0
+	rowsToPrint := make([]string, 0, len(results))
 	for _, result := range results {
 		if characterConfig.IsVerbose {
-			fmt.Printf("%30s -> %d characters\n", result.FilePath, result.Count)
+			rowsToPrint = append(rowsToPrint, fmt.Sprintf("%s\t->\t%d\tcharacters\t", result.FilePath, result.Count))
 		}
 		total += result.Count
+	}
+	if len(rowsToPrint) > 0 {
+		fmt.Println(gomeasure.PrettyPrint(rowsToPrint))
 	}
 	fmt.Printf("\n%s has %d total characters\n", file, total)
 	return err

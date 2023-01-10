@@ -48,11 +48,15 @@ func processLines(directory string) error {
 	}
 	results, err := runner.Run()
 	var total int64 = 0
+	rowsToPrint := make([]string, 0, len(results))
 	for _, file := range results {
 		if lineConfig.IsVerbose {
-			fmt.Printf("%30s -> %d lines \n", file.FilePath, file.Count)
+			rowsToPrint = append(rowsToPrint, fmt.Sprintf("%s\t->\t%d\tlines\t", file.FilePath, file.Count))
 		}
 		total += file.Count
+	}
+	if len(rowsToPrint) > 0 {
+		fmt.Println(gomeasure.PrettyPrint(rowsToPrint))
 	}
 	fmt.Printf("\n%s has %d lines of code\n", directory, total)
 	return err
